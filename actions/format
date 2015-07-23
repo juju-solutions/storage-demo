@@ -1,0 +1,27 @@
+#!/bin/bash
+set -eux
+
+mountpoint=`action-get mountpoint`
+fstype=`action-get fstype`
+moptions=`action-get mount-options`
+force=`action-get force`
+
+blockdevice=`df --output=source $mountpoint | awk 'NR>1{ print $1 }'`
+
+status-set active "Unmounting file system..."
+if umount $mountpoint; then
+    # Some file systems, like xfs, will die if it detects an existing FS
+    # This should be enough to destroy the partition table.
+    status-set active "Destroying old file system..."
+    dd if=/dev/zero of=$blockdevice bs=512K count=1
+
+    status-set active "Formatting block device..."
+    mkfs -t $fstype $blockdevice
+
+    status-set active "Mounting file system..."
+    mount -t $fstype $moptions $blockdevice $mountpoint
+
+    status-set active "Idle"
+else
+    status-set active "Idle; couldn't unmount file system."
+fi

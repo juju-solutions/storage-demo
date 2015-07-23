@@ -1,0 +1,33 @@
+#!/bin/bash
+set -eux
+
+apt-get install -y python-pip && pip install charm-benchmark
+
+
+infile=`action-get if`
+outfile=`action-get of`
+blocksize=`action-get bs`
+count=`action-get count`
+oflag=`action-get oflag`
+fstype=`config-get fstype`
+status-set active "Running dd"
+
+mkdir -p /opt/dd/results/$JUJU_ACTION_UUID
+LOGFILE=/opt/dd/results/$JUJU_ACTION_UUID/dd.log
+
+status-set active "Running dd..."
+
+benchmark-start
+dd if=$infile of=$outfile bs=$blocksize count=$count oflag=$oflag 2> $LOGFILE
+benchmark-finish
+
+bytes=`awk 'END{print $1}' $LOGFILE`
+runtime=`awk 'END{print $6}' $LOGFILE`
+bps=`awk 'END{print $8}' $LOGFILE`
+units=`awk 'END{print $9}' $LOGFILE`
+
+benchmark-raw $LOGFILE
+benchmark-data "results.bytes" $bps $units 'desc'
+benchmark-composite $bps $units 'desc'
+
+status-set active "Idle"

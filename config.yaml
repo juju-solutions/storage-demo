@@ -1,0 +1,13 @@
+options:
+  mountpoint:
+    type: string
+    default: "/srv/data"
+    description: "The mountpoint for the block device"
+  fstype:
+    type: string
+    default: "ext4"
+    description: "The type of filesystem to format the block device as."
+  mount-options:
+    type: string
+    default: ""
+    description: "The options to pass to mount"

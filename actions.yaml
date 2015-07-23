@@ -1,0 +1,40 @@
+format:
+  description: |
+    "Format a block device. WARNING: This *will* destroy all data stored on the
+    device."
+  params:
+    mountpoint:
+      type: string
+      default: "/srv/data"
+      description: "The mountpoint for the block device"
+    fstype:
+      type: string
+      default: "ext4"
+      description: "The type of filesystem to format the block device as."
+    mount-options:
+      type: string
+      default: ""
+      description: "The options to pass to mount"
+dd:
+    description: "Benchmark I/O performance using dd"
+    params:
+        if:
+            type: string
+            default: "/dev/zero"
+            description: ""
+        of:
+            type: string
+            default: "/srv/data/testfile"
+            description: ""
+        bs:
+            type: string
+            default: "1G"
+            description: ""
+        count:
+            type: integer
+            default: 1
+            description: ""
+        oflag:
+            type: string
+            default: "direct"
+            description: ""

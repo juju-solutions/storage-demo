@@ -1,0 +1,20 @@
+#!/bin/bash
+set -eux
+
+LOOPBACK=`storage-get location`
+
+# Get from config
+FSTYPE=`config-get fstype`
+MOUNTPOINT=`config-get mountpoint`
+MOUNTOPTIONS=`config-get mount-options`
+
+juju-log "Formatting block device..."
+status-set maintenance "Formatting block device..."
+mkfs -t $FSTYPE $LOOPBACK
+
+juju-log "Mounting $MOUNTPOINT"
+status-set maintenance "Mounting $MOUNTPOINT"
+mkdir $MOUNTPOINT
+mount -t $FSTYPE $MOUNTOPTIONS $LOOPBACK $MOUNTPOINT
+
+status-set active "Idle $FSTYPE file system"

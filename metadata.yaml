@@ -1,0 +1,20 @@
+name: storage-demo
+summary: <Fill in summary here>
+maintainer: Adam Israel <Adam.Israel@mentat.home.lan>
+description: |
+  <Multi-line description here>
+tags:
+  # Replace "misc" with one or more whitelisted tags from this list:
+  # https://juju.ubuntu.com/docs/authors-charm-metadata.html#charm-metadata
+  - misc
+subordinate: false
+provides:
+  benchmark:
+    interface: benchmark
+storage:
+  data:
+    type: block
+    description: junk storage
+    shared: false # not yet supported, see description below
+    read-only: false # not yet supported, see description below
+    minimum-size: 2G
